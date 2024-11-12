@@ -253,13 +253,3 @@ afficher l'heure/la date de l'allumage de la machine
 (gcim Win32_OperatingSystem).LastBootUpTime : Récupère la dernière date et heure de démarrage de l'ordinateur en utilisant la classe WMI Win32_OperatingSystem. 
 
 (get-date) - ... : Calcule la durée depuis le dernier démarrage en soustrayant la date de démarrage à la date actuelle. 
-
- 
-
- 
-
- 
-
- 
-
- 
