@@ -4,15 +4,14 @@ DOCUMENTATION
 
 Lister tous les processus en cours d'exécution sur votre machine : 
 
+```bash
+mohamed@tpos:~$ ls
+Desktop  Documents  Downloads  gameshell  Music  Pictures  Public  Templates  Videos
+```
+
+```powershell
 Get-Process | Select-Object Name, Id 
-
-Get-Process : Récupère tous les processus en cours d'exécution sur la machine. 
-
-| : Envoie le résultat de la première commande (Get-Process) à la commande suivante. 
-
-Select-Object Name, Id : Filtre les propriétés pour n'afficher que le nom (Name) et l'identifiant unique (Id). 
-
- 
+```
 
 Trouver les 3 processus qui ont le plus petit identifiant : 
 
@@ -52,7 +51,7 @@ Where-Object { $_.Status -eq 'Stopped' } : Filtre pour n'afficher que ceux dont 
 
  
 
-2. Mémoire et CPU 
+1. Mémoire et CPU 
 
 RAM :  
 
