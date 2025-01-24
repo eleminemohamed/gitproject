@@ -188,3 +188,231 @@ usermod -d /home/badguy imnotbobsorry
 - si tu fais `pwd` tu devrais être dans le dossier `/home/badguy` tout de suite après 
 - si tu fais `sudo echo meow` ou n'importe quelle autre commande avec `sudo`, ça ne devrait fonctionner PAS fonctionner
   - sauf les commandes `sudo apt...`, essaie un `sudo apt update` pour voir ?
+
+
+II. Processes
+Jouer avec la commande ps
+🌞 Affichez les processus bash
+
+ps -eF | grep bash
+
+
+🌞 Affichez tous les processus lancés par votre utilisateur
+
+ps -f -u ms379
+
+
+🌞 Affichez le top 5 des processus qui utilisent le plus de RAM
+
+top
+
+ps aux --sort %mem | head -5
+
+
+
+🌞 Affichez le PID du processus du service SSH
+
+ps aux | grep -i sshd
+
+pidof sshd
+
+
+🌞 Affichez le nom du processus avec l'identifiant le plus petit
+
+ps -eF -p 1 -o comm=
+
+
+Parent, enfant, et meurtre
+🌞 Déterminer le PID de votre shell actuel
+
+pidof bash
+
+
+
+🌞 Déterminer le PPID de votre shell actuel
+
+ps -f -C bash
+
+
+🌞 Déterminer le nom de ce processus
+
+ps -ef -p 1776 - o comm=
+
+ps -f -q 1776
+
+
+🌞 Lancer un processus sleep 9999 en tâche de fond
+
+sleep 9999 &
+
+ps -f -C sleep
+
+
+# III. Services
+
+
+## 2. Analyser un service existant
+
+🌞 **S'assurer que le service `ssh` est démarré**
+
+```
+sudo systemctl status sshd
+
+```
+
+🌞 **Isolez la ligne qui indique le nom du programme lancé**
+
+```
+sudo systemctl status sshd | grep Process
+
+```
+
+🌞 **Déterminer le port sur lequel écoute le service SSH**
+
+```
+sudo ss -l | grep sshd
+
+```
+
+🌞 **Consulter les logs du service SSH**
+
+```
+journalctl -u ssh
+
+```
+
+## 3. Modification du service
+
+
+🌞 **Identifier le fichier de configuration du serveur SSH**
+
+```
+sudo ls -l /etc/ssh/conf
+
+```
+
+🌞 **Modifier le fichier de conf**
+
+```
+sudo cat /etc/ssh/conf | grep 
+
+```
+
+🌞 **Redémarrer le service**
+
+```
+systemctl restart ssh
+
+```
+
+🌞 **Effectuer une connexion SSH sur le nouveau port**
+
+```
+ssh -p 32 ms379@192.168.56.102.
+
+```
+
+✨ **Bonus : affiner la conf du serveur SSH**
+
+Désactivation de la connexion root :
+
+```
+sudo nano /etc/ssh/sshd_config
+(dans la config) = PermitRootLogin no
+sudo systemctl restart ssh
+utilisation de sudo
+
+```
+
+Authentification à double facteurs : (utilisation de l'outil Google Authenticator)
+
+```
+sudo apt install libpam-google-authenticator
+google-authenticator
+
+```
+
+Changement du port SSH :
+
+```
+sudo nano /etc/ssh/sshd_config
+(trouver la ligne avec le port et le changer)
+sudo systemctl restart ssh
+
+```
+
+### B. Le service en lui-même
+
+
+🌞 **Trouver le fichier `ssh.service`**
+
+```
+/etc/systemd/system/ssh.service
+
+```
+
+🌞 **Déterminer quel est le programme lancé**
+
+```
+cat sshd.service | grep ExecStart=
+
+```
+
+## 4. Créez votre propre service
+
+
+➜http://192.168.56.102:8888/ (je vois tout les fichiers(téléchargeable)qui se trouvent dans mon /etc/systemd/system)
+
+🌞 **Déterminer le dossier qui contient la commande `python3`**
+
+```
+/etc$ find python3
+
+```
+
+🌞 **Créez un fichier `/etc/systemd/system/meow_web.service`**
+
+```
+sudo nano meow_web.service
+
+```
+
+🌞 **Indiquez à l'OS que vous avez modifié les *services***
+
+```
+systemctl daemon-reload
+
+```
+
+🌞 **Démarrez votre service**
+
+```
+systemctl start meow_web
+
+```
+
+🌞 **Assurez-vous que le service `meow_web` est actif**
+
+```
+systemctl status meow_web
+
+```
+
+🌞 **Déterminer le PID du *processus* Python en cours d'exécution**
+
+```
+ps -eF | grep python3
+
+```
+
+🌞 **Prouvez que le *programme* écoute derrière le port 8888**
+
+- comme dans la section avec le *service* SSH où il faut prouver qu'il écoute derrière le port 22
+- affichez uniquement la ligne qui concerne le programe Python
+
+🌞 **Faire en sote que le *service* se lance automatiquement au démarrage de la machine**
+
+```
+sudo systemctl enable meow_web.service
+
+```
